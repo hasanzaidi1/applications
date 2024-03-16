@@ -18,11 +18,11 @@ struct ContentView: View {
                 .imageScale(.large)
                 .foregroundColor(.accentColor)
             
-            TextField("Enter your name", text: $name)
+            TextField("Enter company name", text: $name)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
             
-            TextField("Enter a link", text: $link)
+            TextField("Enter company's link", text: $link)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
             
