@@ -1,21 +1,66 @@
-//
-//  ContentView.swift
-//  applications
-//
-//  Created by H Z on 3/16/24.
-//
-
 import SwiftUI
 
+struct LinkItem: Identifiable, Codable {
+    var id = UUID()
+    var name: String
+    var link: String
+}
+
 struct ContentView: View {
+    @State private var name = ""
+    @State private var link = ""
+    @State private var links = [LinkItem]()
+
     var body: some View {
         VStack {
             Image(systemName: "globe")
                 .imageScale(.large)
                 .foregroundColor(.accentColor)
-            Text("Hello, world!")
+            
+            TextField("Enter your name", text: $name)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+            
+            TextField("Enter a link", text: $link)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+            
+            Button("Save", action: saveLink)
+                .padding()
+            
+            List(links) { item in
+                VStack(alignment: .leading) {
+                    Text(item.name)
+                    Link("Visit link", destination: URL(string: item.link)!)
+                }
+            }
+            
+            Spacer()
         }
         .padding()
+        .onAppear(perform: loadLinks)
+    }
+    
+    func saveLink() {
+        let newLink = LinkItem(name: name, link: link)
+        links.append(newLink)
+        saveLinks()
+        name = ""
+        link = ""
+    }
+    
+    func saveLinks() {
+        if let encoded = try? JSONEncoder().encode(links) {
+            UserDefaults.standard.set(encoded, forKey: "links")
+        }
+    }
+    
+    func loadLinks() {
+        if let data = UserDefaults.standard.data(forKey: "links") {
+            if let decoded = try? JSONDecoder().decode([LinkItem].self, from: data) {
+                links = decoded
+            }
+        }
     }
 }
 
