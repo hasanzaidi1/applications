@@ -10,6 +10,7 @@ struct ContentView: View {
     @State private var name = ""
     @State private var link = ""
     @State private var links = [LinkItem]()
+    @State private var deletedItem: LinkItem? = nil
 
     var body: some View {
         VStack {
@@ -51,6 +52,13 @@ struct ContentView: View {
                 }
             }
             
+            if let deletedItem = deletedItem {
+                Button("Undo", action: {
+                    undoDelete(deletedItem)
+                })
+                .padding()
+            }
+            
             Spacer()
         }
         .padding()
@@ -67,8 +75,16 @@ struct ContentView: View {
     
     func deleteLink(_ item: LinkItem) {
         if let index = links.firstIndex(where: { $0.id == item.id }) {
-            links.remove(at: index)
+            deletedItem = links.remove(at: index)
             saveLinks()
+        }
+    }
+    
+    func undoDelete(_ item: LinkItem) {
+        if let deletedItem = deletedItem {
+            links.append(deletedItem)
+            saveLinks()
+            self.deletedItem = nil
         }
     }
     
