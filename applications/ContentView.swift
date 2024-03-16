@@ -28,10 +28,26 @@ struct ContentView: View {
             Button("Save", action: saveLink)
                 .padding()
             
-            List(links) { item in
-                VStack(alignment: .leading) {
-                    Text(item.name)
-                    Link("Visit link", destination: URL(string: item.link)!)
+            List {
+                ForEach(links) { item in
+                    VStack(alignment: .leading) {
+                        HStack {
+                            Text(item.name)
+                            Spacer()
+                            Button(action: {
+                                deleteLink(item)
+                            }) {
+                                Image(systemName: "trash")
+                                    .foregroundColor(.red)
+                            }
+                        }
+                        if let url = URL(string: item.link) {
+                            Link("Visit link", destination: url)
+                        } else {
+                            Text("Invalid URL: \(item.link)")
+                                .foregroundColor(.red)
+                        }
+                    }
                 }
             }
             
@@ -47,6 +63,13 @@ struct ContentView: View {
         saveLinks()
         name = ""
         link = ""
+    }
+    
+    func deleteLink(_ item: LinkItem) {
+        if let index = links.firstIndex(where: { $0.id == item.id }) {
+            links.remove(at: index)
+            saveLinks()
+        }
     }
     
     func saveLinks() {
