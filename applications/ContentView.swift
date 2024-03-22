@@ -12,6 +12,10 @@ struct ContentView: View {
     @State private var links = [LinkItem]()
     @State private var deletedItem: LinkItem? = nil
 
+    var sortedLinks: [LinkItem] {
+        return links.sorted { $0.name < $1.name }
+    }
+
     var body: some View {
         VStack {
             Image(systemName: "globe")
@@ -30,7 +34,7 @@ struct ContentView: View {
                 .padding()
             
             List {
-                ForEach(links) { item in
+                ForEach(sortedLinks) { item in // Use sortedLinks instead of links
                     VStack(alignment: .leading) {
                         HStack {
                             Text(item.name)
